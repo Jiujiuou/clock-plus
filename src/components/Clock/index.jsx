@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import styles from "./index.module.less";
 
 /**
@@ -9,9 +9,17 @@ const TIME_TEXTS = {
   // 月份文本：1月到12月
   monthText: Array.from({ length: 12 }, (_, i) => `${i + 1}月`),
   // 日期文本：1号到31号
-  dayText: Array.from({ length: 31 }, (_, i) => `${i + 1}号`),
+  dayText: Array.from({ length: 31 }, (_, i) => `${i + 1}日`),
   // 星期文本：星期一到星期日
-  weekText: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+  weekText: [
+    "星期日",
+    "星期一",
+    "星期二",
+    "星期三",
+    "星期四",
+    "星期五",
+    "星期六",
+  ],
   // 小时文本：0点到23点
   hourText: Array.from({ length: 24 }, (_, i) => `${i}点`),
   // 分钟文本：0分到59分
@@ -26,13 +34,16 @@ const TIME_TEXTS = {
  * offset 值决定了每组标签的水平位置，值越大越靠右
  */
 const TIME_GROUPS = [
-  { texts: TIME_TEXTS.monthText, offset: 0 },     // 月份组，最左侧
-  { texts: TIME_TEXTS.dayText, offset: 80 },      // 日期组，左侧第二个
-  { texts: TIME_TEXTS.weekText, offset: 160 },    // 星期组，左侧第三个
-  { texts: TIME_TEXTS.hourText, offset: 240 },    // 小时组，右侧第三个
-  { texts: TIME_TEXTS.minuteText, offset: 320 },  // 分钟组，右侧第二个
+  { texts: TIME_TEXTS.monthText, offset: 30 }, // 月份组，最左侧
+  { texts: TIME_TEXTS.dayText, offset: 100 }, // 日期组，左侧第二个
+  { texts: TIME_TEXTS.weekText, offset: 170 }, // 星期组，左侧第三个
+  { texts: TIME_TEXTS.hourText, offset: 260 }, // 小时组，右侧第三个
+  { texts: TIME_TEXTS.minuteText, offset: 330 }, // 分钟组，右侧第二个
   { texts: TIME_TEXTS.secondsText, offset: 400 }, // 秒数组，最右侧
 ];
+
+// 计算时钟总宽度（最右侧偏移量 + 一些额外空间）
+const TOTAL_WIDTH = TIME_GROUPS[TIME_GROUPS.length - 1].offset + 100;
 
 /**
  * Clock 组件
@@ -41,10 +52,11 @@ const TIME_GROUPS = [
 const Clock = () => {
   // 时钟容器的引用，用于操作 DOM
   const clockRef = useRef(null);
-  // 存储当前时间数组
-  const [timeArr, setTimeArr] = useState([]);
   // 存储所有时间标签的引用
   const [labels, setLabels] = useState([]);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showButton, setShowButton] = useState(true);
+  const hideButtonTimer = useRef(null);
 
   /**
    * 创建时间标签
@@ -68,12 +80,12 @@ const Clock = () => {
   const getTime = () => {
     const date = new Date();
     return [
-      date.getMonth(),           // 月份 (0-11)
-      date.getDate() - 1,        // 日期 (1-31) -> (0-30)
-      date.getDay(),             // 星期 (0-6)
-      date.getHours(),           // 小时 (0-23)
-      date.getMinutes(),         // 分钟 (0-59)
-      date.getSeconds(),         // 秒数 (0-59)
+      date.getMonth(), // 月份 (0-11)
+      date.getDate() - 1, // 日期 (1-31) -> (0-30)
+      date.getDay(), // 星期 (0-6)
+      date.getHours(), // 小时 (0-23)
+      date.getMinutes(), // 分钟 (0-59)
+      date.getSeconds(), // 秒数 (0-59)
     ];
   };
 
@@ -144,6 +156,90 @@ const Clock = () => {
   };
 
   /**
+   * 更新时钟缩放
+   * 根据容器尺寸动态计算缩放比例和位移距离
+   */
+  const updateClockScale = () => {
+    if (!clockRef.current) return;
+    
+    const container = clockRef.current.parentElement;
+    if (!container) return;
+
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+    
+    // 计算合适的缩放比例
+    // 由于时钟是圆形布局，我们需要考虑高度和宽度的比例
+    const scaleX = containerWidth / (TOTAL_WIDTH * 1.5); // 增加更多空间确保文字不被裁切
+    const scaleY = containerHeight / 300; // 调整预估高度
+    const scale = Math.min(scaleX, scaleY, 2.5); // 限制最大缩放比例
+    
+    // 计算水平居中位置
+    // 向左移动以显示完整的时钟
+    const translateX = -TOTAL_WIDTH / 2.5; // 调整位移比例
+    
+    // 应用变换
+    clockRef.current.style.transform = `scale(${scale}) translateX(${translateX}px)`;
+  };
+
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+        setIsFullscreen(true);
+      } else {
+        await document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    } catch (err) {
+      console.error('全屏切换失败:', err);
+    }
+  };
+
+  /**
+   * 处理鼠标移动，显示按钮
+   * 在全屏/非全屏状态下分别显示对应按钮
+   */
+  const handleMouseMove = useCallback(() => {
+    setShowButton(true);
+    
+    if (hideButtonTimer.current) {
+      clearTimeout(hideButtonTimer.current);
+    }
+
+    hideButtonTimer.current = setTimeout(() => {
+      setShowButton(false);
+    }, 3000);
+  }, []);
+
+  // 监听全屏变化和鼠标移动
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      const isFullscreenNow = !!document.fullscreenElement;
+      setIsFullscreen(isFullscreenNow);
+      // 全屏状态变化时重置按钮显示状态
+      setShowButton(true);
+      if (hideButtonTimer.current) {
+        clearTimeout(hideButtonTimer.current);
+      }
+      hideButtonTimer.current = setTimeout(() => {
+        setShowButton(false);
+      }, 3000);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mousemove', handleMouseMove);
+      if (hideButtonTimer.current) {
+        clearTimeout(hideButtonTimer.current);
+      }
+    };
+  }, [handleMouseMove]);
+
+  /**
    * 初始化时钟
    * 创建并添加所有时间标签
    */
@@ -182,28 +278,46 @@ const Clock = () => {
 
     // 等待一秒后开始旋转动画
     const timer1 = setTimeout(() => {
-      const initialTimeArr = getTime();
-      setTimeArr(initialTimeArr);
-      rotateTransition(initialTimeArr);
-      addColor(initialTimeArr);
+      const initialTime = getTime();
+      rotateTransition(initialTime);
+      addColor(initialTime);
     }, 500);
 
     // 定时更新时间（每秒）
     const timer2 = setInterval(() => {
-      const newTimeArr = getTime();
-      setTimeArr(newTimeArr);
-      rotateTransition(newTimeArr);
-      addColor(newTimeArr);
+      const newTime = getTime();
+      rotateTransition(newTime);
+      addColor(newTime);
     }, 1000);
+
+    // 添加窗口大小变化监听
+    window.addEventListener('resize', updateClockScale);
+    
+    // 初始化缩放
+    updateClockScale();
 
     // 清理定时器
     return () => {
       clearTimeout(timer1);
       clearInterval(timer2);
+      window.removeEventListener('resize', updateClockScale);
     };
   }, [labels]);
 
-  return <div ref={clockRef} className={styles.clock} />;
+  return (
+    <>
+      <div
+        ref={clockRef}
+        className={styles.clock}
+      />
+      <button
+        className={`${styles.fullscreenBtn} ${showButton ? styles.show : ''}`}
+        onClick={toggleFullscreen}
+      >
+        {isFullscreen ? '退出全屏' : '进入全屏'}
+      </button>
+    </>
+  );
 };
 
 export default Clock;
