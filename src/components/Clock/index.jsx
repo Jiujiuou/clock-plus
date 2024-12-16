@@ -21,11 +21,11 @@ const TIME_TEXTS = {
     "星期六",
   ],
   // 小时文本：0点到23点
-  hourText: Array.from({ length: 24 }, (_, i) => `${i}点`),
+  hourText: Array.from({ length: 24 }, (_, i) => `${i}`),
   // 分钟文本：0分到59分
-  minuteText: Array.from({ length: 60 }, (_, i) => `${i}分`),
+  minuteText: Array.from({ length: 60 }, (_, i) => `${i}`),
   // 秒数文本：0秒到59秒
-  secondsText: Array.from({ length: 60 }, (_, i) => `${i}秒`),
+  secondsText: Array.from({ length: 60 }, (_, i) => `${i}`),
 };
 
 /**
@@ -37,9 +37,9 @@ const TIME_GROUPS = [
   { texts: TIME_TEXTS.monthText, offset: 30 }, // 月份组，最左侧
   { texts: TIME_TEXTS.dayText, offset: 100 }, // 日期组，左侧第二个
   { texts: TIME_TEXTS.weekText, offset: 170 }, // 星期组，左侧第三个
-  { texts: TIME_TEXTS.hourText, offset: 260 }, // 小时组，右侧第三个
+  { texts: TIME_TEXTS.hourText, offset: 280 }, // 小时组，右侧第三个
   { texts: TIME_TEXTS.minuteText, offset: 330 }, // 分钟组，右侧第二个
-  { texts: TIME_TEXTS.secondsText, offset: 400 }, // 秒数组，最右侧
+  { texts: TIME_TEXTS.secondsText, offset: 390 }, // 秒数组，最右侧
 ];
 
 // 计算时钟总宽度（最右侧偏移量 + 一些额外空间）
@@ -161,23 +161,23 @@ const Clock = () => {
    */
   const updateClockScale = () => {
     if (!clockRef.current) return;
-    
+
     const container = clockRef.current.parentElement;
     if (!container) return;
 
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
-    
+
     // 计算合适的缩放比例
     // 由于时钟是圆形布局，我们需要考虑高度和宽度的比例
     const scaleX = containerWidth / (TOTAL_WIDTH * 1.5); // 增加更多空间确保文字不被裁切
     const scaleY = containerHeight / 300; // 调整预估高度
     const scale = Math.min(scaleX, scaleY, 2.5); // 限制最大缩放比例
-    
+
     // 计算水平居中位置
     // 向左移动以显示完整的时钟
     const translateX = -TOTAL_WIDTH / 2.5; // 调整位移比例
-    
+
     // 应用变换
     clockRef.current.style.transform = `scale(${scale}) translateX(${translateX}px)`;
   };
@@ -192,7 +192,7 @@ const Clock = () => {
         setIsFullscreen(false);
       }
     } catch (err) {
-      console.error('全屏切换失败:', err);
+      console.error("全屏切换失败:", err);
     }
   };
 
@@ -202,7 +202,7 @@ const Clock = () => {
    */
   const handleMouseMove = useCallback(() => {
     setShowButton(true);
-    
+
     if (hideButtonTimer.current) {
       clearTimeout(hideButtonTimer.current);
     }
@@ -227,12 +227,12 @@ const Clock = () => {
       }, 3000);
     };
 
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("mousemove", handleMouseMove);
 
     return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("mousemove", handleMouseMove);
       if (hideButtonTimer.current) {
         clearTimeout(hideButtonTimer.current);
       }
@@ -291,8 +291,8 @@ const Clock = () => {
     }, 1000);
 
     // 添加窗口大小变化监听
-    window.addEventListener('resize', updateClockScale);
-    
+    window.addEventListener("resize", updateClockScale);
+
     // 初始化缩放
     updateClockScale();
 
@@ -300,21 +300,18 @@ const Clock = () => {
     return () => {
       clearTimeout(timer1);
       clearInterval(timer2);
-      window.removeEventListener('resize', updateClockScale);
+      window.removeEventListener("resize", updateClockScale);
     };
   }, [labels]);
 
   return (
     <>
-      <div
-        ref={clockRef}
-        className={styles.clock}
-      />
+      <div ref={clockRef} className={styles.clock} />
       <button
-        className={`${styles.fullscreenBtn} ${showButton ? styles.show : ''}`}
+        className={`${styles.fullscreenBtn} ${showButton ? styles.show : ""}`}
         onClick={toggleFullscreen}
       >
-        {isFullscreen ? '退出全屏' : '进入全屏'}
+        {isFullscreen ? "退出全屏" : "进入全屏"}
       </button>
     </>
   );
