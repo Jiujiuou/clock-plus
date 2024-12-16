@@ -1,10 +1,11 @@
+import Clock from "./components/Clock";
 import "./App.css";
 
 function App() {
   return (
-    <>
-      <h1>Vite + React</h1>
-    </>
+    <div style={{ width: "100vw", height: "100vh", background: "black" }}>
+      <Clock />
+    </div>
   );
 }
 
