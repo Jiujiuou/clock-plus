@@ -1,0 +1,12 @@
+body {
+  margin: 0;
+  user-select: none;
+  background-color: #fff;
+}
+
+@font-face {
+  font-family: "biantaoti";
+  src: url("./assets/font/biantaoti.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
