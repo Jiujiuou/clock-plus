@@ -39,6 +39,7 @@ function Header() {
           }}
         >
           {list.map((item, index) => {
+            const angle = index * 20;
             return (
               <p
                 key={item}
@@ -47,12 +48,21 @@ function Header() {
                   index === second && styles.active
                 )}
                 style={{
-                  transform: `rotate(-${
-                    index * 20
-                  }deg) translate(100px) rotate(${index * 20}deg)`,
+                  transform: `
+                    rotate(${-angle}deg)
+                    translate(100px)
+                    rotate(${angle}deg)
+                  `,
                 }}
               >
-                {item}
+                <span 
+                  style={{ 
+                    display: 'block',
+                    transform: `rotate(${-angle}deg)`
+                  }}
+                >
+                  {item}
+                </span>
               </p>
             );
           })}
