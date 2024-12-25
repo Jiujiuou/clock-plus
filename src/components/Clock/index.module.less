@@ -2,13 +2,54 @@
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 
-  .cycle {
-    width: 300px;
-    height: 300px;
+  .second {
+    width: 200px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+  }
+
+  .circleWrapper {
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
-    background-color: orange;
+    position: relative;
+    border: 2px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .numberWrapper {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .circleNumber {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: orange;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: bold;
+      left: 50%;
+      top: 50%;
+      margin: -15px 0 0 -15px;
+    }
+
+    .active {
+      color: #fff;
+      z-index: 1;
+    }
   }
 }
