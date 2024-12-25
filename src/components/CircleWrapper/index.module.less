@@ -1,0 +1,35 @@
+.circleWrapper {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  margin: 0 auto;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .numberWrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .circleNumber {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -20px;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    text-align: center;
+    line-height: 40px;
+    transition: all 0.3s;
+
+    &.active {
+      color: #1890ff;
+      font-weight: bold;
+      transform: scale(1.2);
+    }
+  }
+}

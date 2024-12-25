@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./index.module.less";
-import clsx from "clsx";
+import CircleWrapper from "../CircleWrapper/CircleWrapper";
 
 const secondUnitsList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 const secondTensList = [0, 1, 2, 3, 4, 5];
@@ -17,8 +17,8 @@ function Header() {
     const secondsUnit = seconds % 10;
     const secondsTens = Math.floor(seconds / 10);
 
-    setRotationSecondsUnit(secondsUnit * 20);
-    setRotationSecondsTen(secondsTens * 20);
+    setRotationSecondsUnit(secondsUnit * 10);
+    setRotationSecondsTen(secondsTens * 10);
     setSecondUnits(secondsUnit);
     setSecondTens(secondsTens);
   };
@@ -37,81 +37,20 @@ function Header() {
         {secondTens}-{secondUnits}
       </div>
 
-      <div className={styles.circleWrapper}>
-        <div
-          className={styles.numberWrapper}
-          style={{
-            transform: `rotate(${rotationSecondsUnit}deg)`,
-            transition: "transform 0.5s ease",
-          }}
-        >
-          {secondUnitsList.map((item, index) => {
-            const angle = index * 20;
-            return (
-              <p
-                key={item}
-                className={clsx(
-                  styles.circleNumber,
-                  index === secondUnits && styles.active
-                )}
-                style={{
-                  transform: `
-                    rotate(${-angle}deg)
-                    translate(100px)
-                    rotate(${angle}deg)
-                  `,
-                }}
-              >
-                <span
-                  style={{
-                    display: "block",
-                    transform: `rotate(${-angle}deg)`,
-                  }}
-                >
-                  {item}
-                </span>
-              </p>
-            );
-          })}
+      <div className={styles.main}>
+        <div className={styles.blue}>
+          <CircleWrapper
+            rotation={rotationSecondsTen}
+            numberList={secondTensList}
+            activeNumber={secondTens}
+          />
         </div>
-      </div>
-
-      <div className={styles.circleWrapper}>
-        <div
-          className={styles.numberWrapper}
-          style={{
-            transform: `rotate(${rotationSecondsTen}deg)`,
-            transition: "transform 0.5s ease",
-          }}
-        >
-          {secondTensList.map((item, index) => {
-            const angle = index * 20;
-            return (
-              <p
-                key={item}
-                className={clsx(
-                  styles.circleNumber,
-                  index === secondTens && styles.active
-                )}
-                style={{
-                  transform: `
-                    rotate(${-angle}deg)
-                    translate(100px)
-                    rotate(${angle}deg)
-                  `,
-                }}
-              >
-                <span
-                  style={{
-                    display: "block",
-                    transform: `rotate(${-angle}deg)`,
-                  }}
-                >
-                  {item}
-                </span>
-              </p>
-            );
-          })}
+        <div className={styles.green}>
+          <CircleWrapper
+            rotation={rotationSecondsUnit}
+            numberList={secondUnitsList}
+            activeNumber={secondUnits}
+          />
         </div>
       </div>
     </div>
