@@ -25,7 +25,7 @@ function Header() {
   const [rotationHourUnit, setRotationHourUnit] = useState(0);
   const [rotationHourTen, setRotationHourTen] = useState(0);
 
-  const getSecondsUnit = () => {
+  const getTime = () => {
     const now = new Date();
     const seconds = now.getSeconds();
     const minutes = now.getMinutes();
@@ -54,7 +54,7 @@ function Header() {
   };
 
   useEffect(() => {
-    const interval = setInterval(getSecondsUnit, 1000);
+    const interval = setInterval(getTime, 1000);
 
     return () => {
       clearInterval(interval);
