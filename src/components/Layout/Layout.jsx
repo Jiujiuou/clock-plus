@@ -6,7 +6,6 @@ import VerticalClock from "@/components/verticalClock/verticalClock";
 function App() {
   return (
     <div className={styles.wrapper}>
-      <Header />
       <div className={styles.content}>
         <div className={styles.preview}>
           {/* <Clock /> */}
