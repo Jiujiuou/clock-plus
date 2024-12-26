@@ -8,7 +8,8 @@
     "build": "vite build && node afterbuild.cjs",
     "afterbuild": "node afterbuild.cjs",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "husky"
   },
   "husky": {
     "hooks": {
