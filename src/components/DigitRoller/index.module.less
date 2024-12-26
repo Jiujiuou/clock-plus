@@ -1,0 +1,24 @@
+.vertical {
+  width: var(--digit-width, 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s;
+  font-family: "Cursed Timer ULiL", sans-serif;
+
+  .number {
+    width: var(--digit-width, 80px);
+    height: var(--digit-height, 80px);
+    font-size: var(--digit-font-size, 60px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--digit-color, #ccc);
+    opacity: var(--digit-opacity, 0.3);
+  }
+
+  .active {
+    color: var(--digit-active-color, #fff);
+    opacity: var(--digit-active-opacity, 1);
+  }
+}

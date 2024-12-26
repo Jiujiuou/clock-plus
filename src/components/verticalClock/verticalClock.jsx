@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import clsx from "clsx";
+import DigitRoller from "../DigitRoller";
 
 import styles from "./index.module.less";
 
@@ -11,7 +12,7 @@ const hourUnitsList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 const hourTensList = [0, 1, 2];
 const numberSize = 80;
 
-function Header() {
+function VerticalClock() {
   const [secondTen, setSecondTen] = useState(0);
   const [secondUnit, setSecondUnit] = useState(0);
   const [secondTenTranslateY, setSecondTenTranslateY] = useState(0);
@@ -66,119 +67,41 @@ function Header() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.main}>
-        <div
-          className={styles.vertical}
-          style={{ transform: `translateY(${hourTenTranslateY}px)` }}
-        >
-          {hourTensList.map((item, index) => {
-            return (
-              <div
-                key={item}
-                className={clsx(
-                  styles.number,
-                  index === hourTen && styles.active
-                )}
-              >
-                {item}
-              </div>
-            );
-          })}
-        </div>
-        <div
-          className={styles.vertical}
-          style={{ transform: `translateY(${hourUnitTranslateY}px)` }}
-        >
-          {hourUnitsList.map((item, index) => {
-            return (
-              <div
-                key={item}
-                className={clsx(
-                  styles.number,
-                  index === hourUnit && styles.active
-                )}
-              >
-                {item}
-              </div>
-            );
-          })}
-        </div>
+        <DigitRoller
+          numbers={hourTensList}
+          currentNumber={hourTen}
+          translateY={hourTenTranslateY}
+        />
+        <DigitRoller
+          numbers={hourUnitsList}
+          currentNumber={hourUnit}
+          translateY={hourUnitTranslateY}
+        />
         <div className={styles.vertical}></div>
-        <div
-          className={styles.vertical}
-          style={{ transform: `translateY(${minuteTenTranslateY}px)` }}
-        >
-          {minuteTensList.map((item, index) => {
-            return (
-              <div
-                key={item}
-                className={clsx(
-                  styles.number,
-                  index === minuteTen && styles.active
-                )}
-              >
-                {item}
-              </div>
-            );
-          })}
-        </div>
-        <div
-          className={styles.vertical}
-          style={{ transform: `translateY(${minuteUnitTranslateY}px)` }}
-        >
-          {minuteUnitsList.map((item, index) => {
-            return (
-              <div
-                key={item}
-                className={clsx(
-                  styles.number,
-                  index === minuteUnit && styles.active
-                )}
-              >
-                {item}
-              </div>
-            );
-          })}
-        </div>
+        <DigitRoller
+          numbers={minuteTensList}
+          currentNumber={minuteTen}
+          translateY={minuteTenTranslateY}
+        />
+        <DigitRoller
+          numbers={minuteUnitsList}
+          currentNumber={minuteUnit}
+          translateY={minuteUnitTranslateY}
+        />
         <div className={styles.vertical}></div>
-        <div
-          className={styles.vertical}
-          style={{ transform: `translateY(${secondTenTranslateY}px)` }}
-        >
-          {secondTensList.map((item, index) => {
-            return (
-              <div
-                key={item}
-                className={clsx(
-                  styles.number,
-                  index === secondTen && styles.active
-                )}
-              >
-                {item}
-              </div>
-            );
-          })}
-        </div>
-        <div
-          className={styles.vertical}
-          style={{ transform: `translateY(${secondUnitTranslateY}px)` }}
-        >
-          {secondUnitsList.map((item, index) => {
-            return (
-              <div
-                key={item}
-                className={clsx(
-                  styles.number,
-                  index === secondUnit && styles.active
-                )}
-              >
-                {item}
-              </div>
-            );
-          })}
-        </div>
+        <DigitRoller
+          numbers={secondTensList}
+          currentNumber={secondTen}
+          translateY={secondTenTranslateY}
+        />
+        <DigitRoller
+          numbers={secondUnitsList}
+          currentNumber={secondUnit}
+          translateY={secondUnitTranslateY}
+        />
       </div>
     </div>
   );
 }
 
-export default Header;
+export default VerticalClock;

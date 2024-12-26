@@ -1,7 +1,7 @@
 import styles from "./index.module.less";
 import Header from "@/components/Header/Header";
 import Clock from "@/components/Clock/Clock";
-import VerticalClock from "@/components/verticalClock/verticalClock";
+import VerticalClock from "@/components/VerticalClock/VerticalClock";
 
 function App() {
   return (
