@@ -1,32 +1,21 @@
 import { useEffect, useState } from "react";
-import clsx from "clsx";
 import DigitRoller from "../DigitRoller";
-
+import { NUMBER_SIZE, CLOCK_NUMBERS } from "@/constant";
 import styles from "./index.module.less";
+import { getTenAndUnit, getTranslateY } from "@/utils";
 
-const secondUnitsList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-const secondTensList = [0, 1, 2, 3, 4, 5];
-const minuteUnitsList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-const minuteTensList = [0, 1, 2, 3, 4, 5];
-const hourUnitsList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-const hourTensList = [0, 1, 2];
-const numberSize = 80;
+const { SECOND_UNITS, SECOND_TENS, MINUTE_UNITS, MINUTE_TENS, HOUR_UNITS, HOUR_TENS } = CLOCK_NUMBERS;
 
 function VerticalClock() {
-  const [secondTen, setSecondTen] = useState(0);
-  const [secondUnit, setSecondUnit] = useState(0);
-  const [secondTenTranslateY, setSecondTenTranslateY] = useState(0);
-  const [secondUnitTranslateY, setSecondUnitTranslateY] = useState(0);
+  // 时间状态
+  const [hour, setHour] = useState({ ten: 0, unit: 0 });
+  const [minute, setMinute] = useState({ ten: 0, unit: 0 });
+  const [second, setSecond] = useState({ ten: 0, unit: 0 });
 
-  const [minuteTen, setMinuteTen] = useState(0);
-  const [minuteUnit, setMinuteUnit] = useState(0);
-  const [minuteTenTranslateY, setMinuteTenTranslateY] = useState(0);
-  const [minuteUnitTranslateY, setMinuteUnitTranslateY] = useState(0);
-
-  const [hourTen, setHourTen] = useState(0);
-  const [hourUnit, setHourUnit] = useState(0);
-  const [hourTenTranslateY, setHourTenTranslateY] = useState(0);
-  const [hourUnitTranslateY, setHourUnitTranslateY] = useState(0);
+  // translateY 状态也拆分为独立状态
+  const [hourTranslateY, setHourTranslateY] = useState({ ten: 0, unit: 0 });
+  const [minuteTranslateY, setMinuteTranslateY] = useState({ ten: 0, unit: 0 });
+  const [secondTranslateY, setSecondTranslateY] = useState({ ten: 0, unit: 0 });
 
   const getTime = () => {
     const now = new Date();
@@ -34,29 +23,19 @@ function VerticalClock() {
     const minutes = now.getMinutes();
     const hours = now.getHours();
 
-    const secondsUnit = seconds % 10;
-    const secondsTens = Math.floor(seconds / 10);
-    setSecondUnit(secondsUnit);
-    setSecondTen(secondsTens);
-    setSecondTenTranslateY(-secondsTens * numberSize);
-    setSecondUnitTranslateY(-secondsUnit * numberSize);
+    // 更新时间状态
+    setHour(getTenAndUnit(hours));
+    setMinute(getTenAndUnit(minutes));
+    setSecond(getTenAndUnit(seconds));
 
-    const minuteUnit = minutes % 10;
-    const minuteTen = Math.floor(minutes / 10);
-    setMinuteUnit(minuteUnit);
-    setMinuteTen(minuteTen);
-    setMinuteTenTranslateY(-minuteTen * numberSize);
-    setMinuteUnitTranslateY(-minuteUnit * numberSize);
-
-    const hoursUnit = hours % 10;
-    const hoursTen = Math.floor(hours / 10);
-    setHourUnit(hoursUnit);
-    setHourTen(hoursTen);
-    setHourTenTranslateY(-hoursTen * numberSize);
-    setHourUnitTranslateY(-hoursUnit * numberSize);
+    // 使用工具函数更新位移状态
+    setHourTranslateY(getTranslateY(hours, NUMBER_SIZE));
+    setMinuteTranslateY(getTranslateY(minutes, NUMBER_SIZE));
+    setSecondTranslateY(getTranslateY(seconds, NUMBER_SIZE));
   };
 
   useEffect(() => {
+    getTime();
     const interval = setInterval(getTime, 1000);
 
     return () => {
@@ -68,36 +47,36 @@ function VerticalClock() {
     <div className={styles.wrapper}>
       <div className={styles.main}>
         <DigitRoller
-          numbers={hourTensList}
-          currentNumber={hourTen}
-          translateY={hourTenTranslateY}
+          numbers={HOUR_TENS}
+          currentNumber={hour.ten}
+          translateY={hourTranslateY.ten}
         />
         <DigitRoller
-          numbers={hourUnitsList}
-          currentNumber={hourUnit}
-          translateY={hourUnitTranslateY}
-        />
-        <div className={styles.vertical}></div>
-        <DigitRoller
-          numbers={minuteTensList}
-          currentNumber={minuteTen}
-          translateY={minuteTenTranslateY}
-        />
-        <DigitRoller
-          numbers={minuteUnitsList}
-          currentNumber={minuteUnit}
-          translateY={minuteUnitTranslateY}
+          numbers={HOUR_UNITS}
+          currentNumber={hour.unit}
+          translateY={hourTranslateY.unit}
         />
         <div className={styles.vertical}></div>
         <DigitRoller
-          numbers={secondTensList}
-          currentNumber={secondTen}
-          translateY={secondTenTranslateY}
+          numbers={MINUTE_TENS}
+          currentNumber={minute.ten}
+          translateY={minuteTranslateY.ten}
         />
         <DigitRoller
-          numbers={secondUnitsList}
-          currentNumber={secondUnit}
-          translateY={secondUnitTranslateY}
+          numbers={MINUTE_UNITS}
+          currentNumber={minute.unit}
+          translateY={minuteTranslateY.unit}
+        />
+        <div className={styles.vertical}></div>
+        <DigitRoller
+          numbers={SECOND_TENS}
+          currentNumber={second.ten}
+          translateY={secondTranslateY.ten}
+        />
+        <DigitRoller
+          numbers={SECOND_UNITS}
+          currentNumber={second.unit}
+          translateY={secondTranslateY.unit}
         />
       </div>
     </div>

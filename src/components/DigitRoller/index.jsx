@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import PropTypes from 'prop-types';
 import styles from "./index.module.less";
 
 /**
@@ -11,7 +10,7 @@ import styles from "./index.module.less";
  */
 const DigitRoller = ({ numbers, currentNumber, translateY }) => {
   return (
-    <div 
+    <div
       className={styles.vertical}
       style={{ transform: `translateY(${translateY}px)` }}
     >
@@ -28,12 +27,6 @@ const DigitRoller = ({ numbers, currentNumber, translateY }) => {
       ))}
     </div>
   );
-};
-
-DigitRoller.propTypes = {
-  numbers: PropTypes.arrayOf(PropTypes.number).isRequired,
-  currentNumber: PropTypes.number.isRequired,
-  translateY: PropTypes.number.isRequired,
 };
 
 export default DigitRoller;
