@@ -15,48 +15,42 @@ const {
 
 /**
  * VerticalClock 组件 - 垂直滚动时钟显示
- * 
+ *
  * @component
  * @description
  * 一个优雅的垂直滚动时钟组件，以数字滚动的方式显示当前时间。
- * 时间以 HH:MM:SS 格式显示，每个数字位都会随时间变化而平滑滚动。
- * 
- * @example
- * ```jsx
- * <VerticalClock />
- * ```
- * 
- * @returns {JSX.Element} 返回垂直滚动时钟组件
+ * 支持12小时制和24小时制的切换显示。
+ *
+ * @param {Object} props
+ * @param {boolean} [props.is24Hour=true] - 是否使用24小时制显示时间
  */
-function VerticalClock() {
-  // 时间状态管理
-  /** @type {{ ten: number, unit: number }} 小时的十位和个位 */
+function VerticalClock({ is24Hour = true }) {
   const [hour, setHour] = useState({ ten: 0, unit: 0 });
-  /** @type {{ ten: number, unit: number }} 分钟的十位和个位 */
   const [minute, setMinute] = useState({ ten: 0, unit: 0 });
-  /** @type {{ ten: number, unit: number }} 秒钟的十位和个位 */
   const [second, setSecond] = useState({ ten: 0, unit: 0 });
 
-  // translateY 位移状态管理
-  /** @type {{ ten: number, unit: number }} 小时数字的位移值 */
   const [hourTranslateY, setHourTranslateY] = useState({ ten: 0, unit: 0 });
-  /** @type {{ ten: number, unit: number }} 分钟数字的位移值 */
   const [minuteTranslateY, setMinuteTranslateY] = useState({ ten: 0, unit: 0 });
-  /** @type {{ ten: number, unit: number }} 秒钟数字的位移值 */
   const [secondTranslateY, setSecondTranslateY] = useState({ ten: 0, unit: 0 });
 
   /**
    * 更新时间和位移状态
-   * 
+   *
    * @description
-   * 获取当前时间，并更新各个数字位的显示值和对应的位移值。
-   * 位移值用于实现数字的垂直滚动动画效果。
+   * 获取当前时间，并根据选择的时间格式（12/24小时制）更新显示。
+   * 同时更新各个数字位的显示值和对应的位移值。
    */
   const getTime = () => {
     const now = new Date();
     const seconds = now.getSeconds();
     const minutes = now.getMinutes();
-    const hours = now.getHours();
+    let hours = now.getHours();
+
+    // 处理12小时制的显示
+    if (!is24Hour) {
+      hours = hours % 12;
+      hours = hours === 0 ? 12 : hours; // 将 0 点显示为12点
+    }
 
     // 更新时间状态
     setHour(getTenAndUnit(hours));
@@ -69,16 +63,12 @@ function VerticalClock() {
     setSecondTranslateY(getTranslateY(seconds, NUMBER_SIZE));
   };
 
-  // 组件挂载时启动定时器，每秒更新时间
+  // 组件挂载和 is24Hour 变化时更新时间
   useEffect(() => {
-    getTime(); // 初始化时间
+    getTime(); // 立即更新一次
     const interval = setInterval(getTime, 1000);
-
-    // 清理定时器，防止内存泄漏
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+    return () => clearInterval(interval);
+  }, [is24Hour]); // 依赖项添加 is24Hour，确保格式切换时立即更新
 
   return (
     <div className={styles.wrapper}>

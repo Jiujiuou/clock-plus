@@ -29,6 +29,25 @@
       flex-direction: column;
       border-left: 1px solid #e5e7eb;
       user-select: none;
+
+      .formatToggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #000;
+        cursor: pointer;
+
+        input[type="checkbox"] {
+          width: 16px;
+          height: 16px;
+          cursor: pointer;
+        }
+
+        span {
+          font-size: 14px;
+          user-select: none;
+        }
+      }
     }
   }
 }

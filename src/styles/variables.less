@@ -1,0 +1,36 @@
+// 尺寸变量
+@digit-width: 80px;
+@digit-height: 80px;
+@digit-font-size: 60px;
+
+// 颜色变量
+@background-color: #111;
+@digit-color: #ccc;
+@digit-active-color: #aaa;
+
+// 透明度变量
+@digit-opacity: 0.3;
+@digit-active-opacity: 1;
+
+// 动画变量
+@transition-duration: 0.5s;
+@transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+
+// 布局变量
+@vertical-transform: 40%;
+
+// 导出变量为 CSS 变量，方便 JavaScript 动态修改
+:root {
+  // 尺寸
+  --digit-width: @digit-width;
+  --digit-height: @digit-height;
+  --digit-font-size: @digit-font-size;
+  
+  // 颜色
+  --digit-color: @digit-color;
+  --digit-active-color: @digit-active-color;
+  
+  // 透明度
+  --digit-opacity: @digit-opacity;
+  --digit-active-opacity: @digit-active-opacity;
+}
