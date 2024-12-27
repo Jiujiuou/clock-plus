@@ -3,8 +3,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: all 0.3s;
+  // 使用 cubic-bezier 缓动函数使动画更自然流畅
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: "Cursed Timer ULiL", sans-serif;
+  will-change: transform; // 提示浏览器优化动画性能
 
   .number {
     width: var(--digit-width, 80px);
@@ -15,6 +17,8 @@
     align-items: center;
     color: var(--digit-color, #ccc);
     opacity: var(--digit-opacity, 0.3);
+    // 添加颜色和透明度的过渡效果
+    transition: all 0.3s ease-in-out;
   }
 
   .active {
